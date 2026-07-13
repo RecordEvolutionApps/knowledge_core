@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ironflock-knowledge-core"
+version = "1.0.0"
+description = "Markdown knowledge library served to IronFlock app AI agents over WAMP RPC tools"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Proprietary" }
+authors = [{ name = "Record Evolution GmbH" }]
+# pyyaml parses the doc frontmatter. The ironflock SDK is NOT a dependency:
+# the handle is injected by the consuming app (register_knowledge_tools),
+# which must pin ironflock >= 1.5.3 (register_device_function).
+dependencies = ["pyyaml>=6"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-asyncio>=0.23"]
+
+[tool.setuptools]
+packages = ["knowledge_core"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
