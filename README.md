@@ -177,6 +177,16 @@ fenced snippet in every doc then goes through your app's real parser on every
 change. See the plc_collector's `collector/check_knowledge.py` for a worked
 example.
 
+## Dev tasks
+
+```bash
+just setup          # create .venv with the package (editable) + test deps
+just test           # run pytest (uses .venv if present)
+just test -k rpc    # run a subset (args pass through to pytest)
+just release 1.1.0  # bump version, test, commit, tag, push (main only, clean tree)
+just release-patch  # auto-bump the patch version and release it
+```
+
 ## Releasing a new version
 
 Same model as `collector_core`: no PyPI package — apps install from this Git
@@ -185,10 +195,12 @@ repo and pin a tag. A release is a version bump on `main` plus a matching tag:
 1. Judge semver by the public API (`KnowledgeLibrary`, `list_docs`/`get_doc`
    response shapes, `register_knowledge_tools`, `validate_library`) and the
    doc-format contract (required frontmatter keys).
-2. Bump `version` in `pyproject.toml` and `__version__` in
-   `knowledge_core/__init__.py`.
-3. Commit on `main`, tag `vX.Y.Z`, push with `--tags`.
-4. Re-pin consuming apps' `requirements.txt` when they are ready.
+2. Run `just release X.Y.Z` (or `just release-patch`). It bumps `version` in
+   `pyproject.toml` and `__version__` in `knowledge_core/__init__.py`, runs
+   the tests, commits on `main`, tags `vX.Y.Z` and pushes with `--tags` —
+   refusing to run off `main`, on a dirty tree, or onto an existing tag. Keep
+   the git tag and the `pyproject.toml` version identical.
+3. Re-pin consuming apps' `requirements.txt` when they are ready.
 
 SDK note: this library never imports `ironflock`; the handle is injected.
 Apps must pin **`ironflock >= 1.5.3`** for `register_device_function`.
