@@ -1,7 +1,7 @@
 """ironflock-knowledge-core: markdown knowledge libraries served to
 IronFlock app AI agents as on-demand WAMP RPC tools (list/get)."""
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 from .handlers import (
     DEFAULT_MAX_CHARS,
