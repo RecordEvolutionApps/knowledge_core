@@ -158,6 +158,11 @@ def _coerce_kwargs(args, kwargs, positional=()):
     Accepts keyword args, a single positional dict, or bare positional
     values mapped onto `positional` names — the platform agent runtime's
     calling convention is not pinned down, so tolerate all of them.
+
+    `device_key` is dropped: the agent must send it to address the call at a
+    gateway and the platform strips it before dispatch, but a leaked one
+    would land in handle_list's catch-all metadata filters and match no doc
+    at all — an empty library reported as success rather than an error.
     """
     out = {}
     if len(args) == 1 and isinstance(args[0], dict):
@@ -167,6 +172,7 @@ def _coerce_kwargs(args, kwargs, positional=()):
             out[name] = value
     for key, value in (kwargs or {}).items():
         out[key] = value
+    out.pop("device_key", None)
     return out
 
 

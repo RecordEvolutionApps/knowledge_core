@@ -159,6 +159,26 @@ def test_rpc_handlers_conventions_and_serializable():
         shutil.rmtree(root)
 
 
+def test_rpc_handlers_ignore_the_routing_device_key():
+    # Topic tools carry a device_key to address the gateway; the platform
+    # strips it before dispatch. If one ever leaks through it must not reach
+    # handle_list's catch-all metadata filters, where it matches no doc and
+    # returns an empty library as a SUCCESS — the agent reads that as "this
+    # app knows nothing" instead of retrying.
+    root = make_tree()
+    try:
+        handlers = rpc_handlers(KnowledgeLibrary(root))
+        assert handlers["list"](device_key=42) == handlers["list"]()
+        assert handlers["list"]({"device_key": 42, "query": "alpha"})["count"] == 1
+        assert handlers["list"](device_key=42, protocol="testproto")["count"] == 1
+        assert (
+            handlers["get"](doc_id="protocol.testproto", device_key=42)
+            == handlers["get"](doc_id="protocol.testproto")
+        )
+    finally:
+        shutil.rmtree(root)
+
+
 def test_register_knowledge_tools():
     class FakeIronflock:
         def __init__(self, fail_topics=()):
