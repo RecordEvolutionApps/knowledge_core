@@ -4,8 +4,9 @@ A reusable knowledge library for IronFlock apps: ship distilled, hand-authored
 markdown docs (protocol guides, device register maps, how-tos) inside your app
 image and serve them to the platform AI agents as **on-demand WAMP RPC tools**
 (`list` + `get`). Agents fetch only the documents a question needs — system
-prompts stay small (the ai-template caps them at 5000 chars), knowledge scales
-with files, not prompts.
+prompts stay small (every prompt character is re-read on every turn, and the
+ai-template caps them at 25000 chars), knowledge scales with files, not
+prompts.
 
 This is retrieval-augmented generation without embeddings: the frontmatter of
 each doc is the catalog, `list` does metadata filtering + keyword matching,
